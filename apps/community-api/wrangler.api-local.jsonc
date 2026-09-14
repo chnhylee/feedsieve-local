@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "feedsieve-community-api-local",
+  "main": "src/api-entry.ts",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "vars": {
+    "SITE_HOST": "localhost,127.0.0.1"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "feedsieve-community",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "KEYWORD_PACKS",
+      "bucket_name": "feedsieve-keyword-packs"
+    }
+  ]
+}

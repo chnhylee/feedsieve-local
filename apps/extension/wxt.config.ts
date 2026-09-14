@@ -16,29 +16,38 @@ function officialJsonPlugin() {
 
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
-  manifest: (env) => ({
-    name: 'FeedSieve',
-    short_name: 'FeedSieve',
-    description: '用了福滤娃，评论区不骚了，也不黑了。X（Twitter）垃圾账号清理工具：黄框标出，一键原生拉黑，全端同步消失。',
-    permissions: ['storage', 'sidePanel'],
-    side_panel: {
-      default_path: 'popup.html',
-    },
-    host_permissions: [
-      'https://x.com/*',
-      // dev 模式放行本地社区 API（wrangler dev）；生产构建不包含 localhost。
-      ...(env.mode === 'development' ? ['http://localhost/*'] : []),
-      // 社区名单下载 + 用户黑白名单同步（Cloudflare Worker，自部署见 apps/community-api）
-      'https://feedsieve-api.chendahuang.com/*',
-    ],
-    icons: {
-      16: '/icon-16.png',
-      32: '/icon-32.png',
-      48: '/icon-48.png',
-      64: '/icon.png',
-      128: '/icon-128.png',
-    },
-  }),
+  manifest: (env) => {
+    const localApiBase =
+      env.mode === 'development' ? (process.env.FEEDSIEVE_API_BASE ?? '').trim() : '';
+    const localApiPattern = localApiBase
+      ? `${new URL(localApiBase).origin}/*`
+      : 'http://localhost/*';
+    const isLocalBuild = Boolean(localApiBase);
+
+    return {
+      name: isLocalBuild ? 'FeedSieve Local' : 'FeedSieve',
+      short_name: isLocalBuild ? 'FeedSieve Local' : 'FeedSieve',
+      description: '用了福滤娃，评论区不骚了，也不黑了。X（Twitter）垃圾账号清理工具：黄框标出，一键原生拉黑，全端同步消失。',
+      permissions: ['storage', 'sidePanel'],
+      side_panel: {
+        default_path: 'popup.html',
+      },
+      host_permissions: [
+        'https://x.com/*',
+        // dev 模式放行本地社区 API；生产构建不包含 localhost。
+        ...(env.mode === 'development' ? [localApiPattern] : []),
+        // 社区名单下载 + 用户黑白名单同步（Cloudflare Worker，自部署见 apps/community-api）
+        ...(isLocalBuild ? [] : ['https://feedsieve-api.chendahuang.com/*']),
+      ],
+      icons: {
+        16: '/icon-16.png',
+        32: '/icon-32.png',
+        48: '/icon-48.png',
+        64: '/icon.png',
+        128: '/icon-128.png',
+      },
+    };
+  },
   vite: (env) => ({
     plugins: [officialJsonPlugin()],
     define: {

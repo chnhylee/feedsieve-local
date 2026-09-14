@@ -11,6 +11,6 @@ import type { TrustedKey } from './signing';
 export const TRUSTED_KEYS: readonly TrustedKey[] = [
   {
     key_id: 'release-1',
-    publicKeyBase64: 'CJH7JfZZs3z2Iw9+hlCs0FWh8HoJmycx7UatXDVSnic=',
+    publicKeyBase64: 'wkAeAsoewh0wBdV0JdmKE9u7FCxRX2pzpq+RP4sE5Mg=',
   },
 ];
